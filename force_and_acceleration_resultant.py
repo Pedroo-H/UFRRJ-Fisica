@@ -4,6 +4,7 @@ import re, os, curses, random
 VECTOR_REGEX = r"^\s*\(?\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*\)?\s*$"
 
 def main():
+    clear_console()
     vectors_quantity = int(input("Quantos vetores de força serão utilizados? "))
     vector_retrieve_method = get_user_option()
 
@@ -39,7 +40,28 @@ def log(vectors, mass, force, acceleration):
         log_file.write(log_str)
 
 def get_vectors_by_file(quantity):
-    pass
+    vectors = []
+
+    path = input("Qual o caminho do arquivo? ")
+    try:
+        with open(path, 'r') as file:
+            lines = file.readlines()
+            for index, line in enumerate(lines):
+                if validate_vector(line):
+                    fx, fy, fz = map(float, re.findall(r"-?\d+(?:\.\d+)?", line))
+                    vectors.append((fx, fy, fz))
+                else:
+                    print(f'Linha {i + 1} inválida: {line.strip()}. Use o formato (Fx, Fy, Fz).')
+                    exit()
+    except FileNotFoundError:
+        print(f'Arquivo \'{path}\' não encontrado.')
+        exit()
+
+    if len(vectors) != quantity:
+        print(f'Não foi possível utilizar o arquivo passado. Foram encontrados {len(vectors)} vetores, esperado é {quantity}.')
+        exit()
+
+    return vectors
 
 def get_vectors_by_input(quantity):
     vectors = []
