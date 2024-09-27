@@ -1,11 +1,14 @@
-import re, os, curses
+import re, os, curses, random
 
 # Vectors must have (Fx, Fy, Fz) format and are float that can be negative.
 VECTOR_REGEX = r"^\s*\(?\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*\)?\s*$"
 
 def main():
+    quantity = 5
     vector_retrieve_method = get_user_option()
-    print(vector_retrieve_method)
+
+    vectors = vector_retrieve_method(5)
+
 
 def validate_vector(input: str):
     return re.match(VECTOR_REGEX, input)
@@ -27,14 +30,18 @@ def log(vectors, mass, force, acceleration):
     with open('log.txt', 'w') as log_file:
         log_file.write(log_str)
 
-def get_vectors_by_file():
+def get_vectors_by_file(quantity):
     pass
 
-def get_vectors_by_input():
+def get_vectors_by_input(quantity):
     pass
 
-def get_vectors_randomly():
-    pass
+def get_vectors_randomly(quantity):
+    min_value = float(input("Informe o valor mínimo dos vetores que serão gerados: "))
+    max_value = float(input("Informe o valor máximo dos vetores que serão gerados: "))
+
+    return [(random.uniform(min_value, max_value), random.uniform(min_value, max_value), random.uniform(min_value, max_value))
+               for _ in range(quantity)]
 
 def get_user_option():
     return curses.wrapper(menu)
