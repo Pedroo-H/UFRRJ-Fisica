@@ -7,8 +7,8 @@ def main():
 
     derivatives = differentiate_polynomial(coefficients)
 
-    log_str = f'Polinômio Original: {format_polynomial(coefficients)}\n'
-    log_str += f'Derivada do polinômio: { format_polynomial(derivatives) if derivatives else "0"}\n'
+    log_str = f'Polinômio Original:\n {format_polynomial(coefficients)}\n'
+    log_str += f'Derivada do polinômio:\n { format_polynomial(derivatives) if derivatives else "0"}\n'
 
     print(log_str)
     with open('log.txt', 'w') as log_file:
