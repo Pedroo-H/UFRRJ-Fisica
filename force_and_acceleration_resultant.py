@@ -4,10 +4,17 @@ import re, os, curses, random
 VECTOR_REGEX = r"^\s*\(?\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*\)?\s*$"
 
 def main():
-    quantity = 5
+    vectors_quantity = int(input("Quantos vetores de força serão utilizados? "))
     vector_retrieve_method = get_user_option()
 
-    vectors = vector_retrieve_method(5)
+    vectors = vector_retrieve_method(vectors_quantity)
+
+    mass = float(input("Insira a massa (em Kg): "))
+
+    force = (sum(v[0] for v in vectors), sum(v[1] for v in vectors), sum(v[2] for v in vectors))
+    acceleration = tuple(f / mass for f in force)
+
+    log(vectors, mass, force, acceleration)
 
 
 def validate_vector(input: str):
@@ -25,6 +32,7 @@ def log(vectors, mass, force, acceleration):
     log_str += f'Força resultante: ({force[0]:.2f}, {force[1]:.2f}, {force[2]:.2f})\n'
     log_str += f'Aceleração resultante: ({acceleration[0]:.2f}, {acceleration[1]:.2f}, {acceleration[2]:.2f})\n'
 
+    clear_console()
     print(log_str)
 
     with open('log.txt', 'w') as log_file:
@@ -34,7 +42,19 @@ def get_vectors_by_file(quantity):
     pass
 
 def get_vectors_by_input(quantity):
-    pass
+    vectors = []
+
+    for i in range(quantity):
+        while True:
+            vector_str = input(f"Insira o vetor {i + 1} (Fx, Fy, Fz): ")
+            if validate_vector(vector_str):
+                fx, fy, fz = map(float, re.findall(r"-?\d+(?:\.\d+)?", vector_str))
+                vectors.append((fx, fy, fz))
+                break
+            else:
+                print("Entrada inválida! Use o formato (Fx, Fy, Fz). Tente novamente.")
+
+    return vectors
 
 def get_vectors_randomly(quantity):
     min_value = float(input("Informe o valor mínimo dos vetores que serão gerados: "))
